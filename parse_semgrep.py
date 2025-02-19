@@ -7,28 +7,22 @@ into GitHub Actions warning annotations. For each issue found by Semgrep,
 it creates an annotation containing the file path, line number, message,
 suggested fix (if available), and references (if available).
 
-The Semgrep JSON output is expected to have a 'results' array containing objects with:
-- path: file path where the issue was found
-- start: object containing 'line' number
-- extra: object containing 'message' description
-- fix: optional fix suggestion
-- extra.metadata.references: optional list of reference URLs
-
 Usage:
     python parse_semgrep.py [input_file] [--fail-on SEVERITY,...]
 
 Arguments:
     input_file          JSON file containing Semgrep results (default: results.json)
-    --fail-on          Comma-separated list of severity levels that will cause script
-                       to exit with error (e.g., --fail-on ERROR,WARNING)
+    --fail-on           Comma-separated list of severity levels that will cause the script
+                        to exit with error (e.g., --fail-on ERROR,WARNING)
 
 The script processes all results before exiting, ensuring all issues are reported.
 Exit code 1 indicates that issues with specified severity levels were found.
 """
+
 import json
 import sys
+import os
 from pathlib import Path
-
 
 def parse_args():
     import argparse
@@ -39,23 +33,22 @@ def parse_args():
                         help='Comma-separated list of severity levels that will cause failure')
     return parser.parse_args()
 
-
 def wrap_text(text, width=120):
-    """ Wraps the given text at approximately `width` characters without breaking words. """
+    """Wrap the given text at approximately `width` characters without breaking words."""
     current_line = []
     current_len = 0
-    for w in text.split():
-        current_line.append(w)
-        current_len += len(w)
+    for word in text.split():
+        current_line.append(word)
+        current_len += len(word)
         if current_len > width:
             yield ' '.join(current_line)
             current_line = []
             current_len = 0
     yield ' '.join(current_line)
 
-
 def main():
     args = parse_args()
+    # Parse the comma-separated fail-on severity levels, if provided.
     fail_on = set(level.upper() for level in args.fail_on.split(',')) if args.fail_on else set()
 
     with open(Path(args.input_file), "r", encoding="utf-8") as f:
@@ -65,6 +58,8 @@ def main():
         sys.exit(0)
 
     found_severe_issues = False
+    # Accumulate all annotation lines to later set as output
+    annotations_output = ""
 
     for issue in data["results"]:
         path = issue.get("path")
@@ -79,7 +74,6 @@ def main():
             "INFO": "notice",
         }.get(severity, "warning")  # default to warning if unknown severity
 
-        # Extract additional metadata
         fix = issue.get("fix", "")
         metadata = issue.get("extra", {}).get("metadata", {})
         references = metadata.get("references", [])
@@ -94,7 +88,6 @@ def main():
             wrapped_fix = "%0A".join(wrap_text(fix))
             annotation_msg += f"%0ASuggested fix: {wrapped_fix}"
 
-        # Add metadata information
         annotation_msg += "%0A%0AMetadata:"
         annotation_msg += f"%0A- Confidence: {confidence}"
         annotation_msg += f"%0A- Likelihood: {likelihood}"
@@ -102,17 +95,29 @@ def main():
         annotation_msg += f"%0A- Source: {source}"
 
         if references:
-            ref_list = "%0A".join(f'- {r}' for r in references)
+            ref_list = "%0A".join(f'- {ref}' for ref in references)
             annotation_msg += f"%0A%0AReferences:%0A{ref_list}"
 
-        print(f"::{level} file={path},line={start_line}::{annotation_msg}")
+        # Form the GitHub Actions annotation command
+        annotation_line = f"::{level} file={path},line={start_line}::{annotation_msg}"
+        print(annotation_line)
+        annotations_output += annotation_line + "\n"
 
         if severity in fail_on:
             found_severe_issues = True
 
+    # If running in GitHub Actions, write the accumulated annotations to GITHUB_OUTPUT
+    if "GITHUB_OUTPUT" in os.environ:
+        try:
+            with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+                fh.write("annotations<<EOF\n")
+                fh.write(annotations_output)
+                fh.write("\nEOF\n")
+        except Exception as e:
+            print(f"Error writing to GITHUB_OUTPUT: {e}", file=sys.stderr)
+
     if found_severe_issues:
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

@@ -1,35 +1,74 @@
 {
-  "report_name": "XML",
-  "diff_name": "origin/main...HEAD, staged and unstaged changes",
-  "src_stats": {
-    "annotate_coverage.py": {
-      "percent_covered": 25.0,
-      "violation_lines": [
-        1,
-        2,
-        3
-      ],
-      "covered_lines": [
-        4
-      ],
-      "violations": [
-        [
-          1,
-          null
-        ],
-        [
-          2,
-          null
-        ],
-        [
-          3,
-          null
-        ]
-      ]
+  "version": "1.101.0",
+  "results": [
+    {
+      "check_id": "python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+      "path": "parse_semgrep.py",
+      "start": {
+        "line": 1,
+        "col": 1,
+        "offset": 1
+      },
+      "end": {
+        "line": 2,
+        "col": 1,
+        "offset": 1
+      },
+      "extra": {
+        "message": "Test annotation",
+        "metadata": {
+          "owasp": [
+            "A01:2017 - Injection",
+            "A03:2021 - Injection"
+          ],
+          "cwe": [
+            "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+          ],
+          "references": [
+            "https://stackoverflow.com/questions/775296/mysql-parameterized-queries"
+          ],
+          "category": "security",
+          "technology": [
+            "python"
+          ],
+          "cwe2022-top25": true,
+          "cwe2021-top25": true,
+          "subcategory": [
+            "audit"
+          ],
+          "likelihood": "LOW",
+          "impact": "HIGH",
+          "confidence": "LOW",
+          "license": "Semgrep Rules License v1.0. For more details, visit semgrep.dev/legal/rules-license",
+          "vulnerability_class": [
+            "SQL Injection"
+          ],
+          "source": "https://semgrep.dev/r/python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+          "shortlink": "https://sg.run/EkWw",
+          "semgrep.dev": {
+            "rule": {
+              "origin": "community",
+              "r_id": 9637,
+              "rule_id": "3qUP9k",
+              "rv_id": 946343,
+              "url": "https://semgrep.dev/playground/r/e1T98KK/python.lang.security.audit.formatted-sql-query.formatted-sql-query",
+              "version_id": "e1T98KK"
+            }
+          }
+        },
+        "severity": "WARNING",
+        "fingerprint": "requires login",
+        "lines": "requires login",
+        "validation_state": "NO_VALIDATOR",
+        "engine_kind": "OSS"
+      }
     }
+  ],
+  "errors": [],
+  "paths": {
+    "scanned": [
+      "parse_semgrep.py"
+    ]
   },
-  "total_num_lines": 4,
-  "total_num_violations": 3,
-  "total_percent_covered": 25,
-  "num_changed_lines": 8
+  "skipped_rules": []
 }

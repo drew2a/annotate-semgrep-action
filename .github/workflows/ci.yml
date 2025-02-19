@@ -1,4 +1,4 @@
-name: Test Annotate Coverage Action
+name: Test Annotate Semgrep Action
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run Annotate Coverage Action
+      - name: Run Annotate Semgrep Action
         id: annotate
         uses: ./
         with:
