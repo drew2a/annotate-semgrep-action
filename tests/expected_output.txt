@@ -1,0 +1,3 @@
+::warning file=annotate_coverage.py,line=1::Line 1 is not covered by tests. Consider adding test cases to improve coverage.
+::warning file=annotate_coverage.py,line=2::Line 2 is not covered by tests. Consider adding test cases to improve coverage.
+::warning file=annotate_coverage.py,line=3::Line 3 is not covered by tests. Consider adding test cases to improve coverage.

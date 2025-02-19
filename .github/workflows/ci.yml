@@ -1,0 +1,24 @@
+name: Test Annotate Coverage Action
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Annotate Coverage Action
+        id: annotate
+        uses: ./
+        with:
+          json_path: "tests/test_result.json"
+
+      - name: Compare generated output with expected
+        run: |
+          echo "${{ steps.annotate.outputs.annotations }}" > generated_output.txt
+          diff -u tests/expected_output.txt generated_output.txt
