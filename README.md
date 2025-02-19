@@ -39,6 +39,9 @@ Please refer to the [release page](https://github.com/drew2a/annotate-semgrep-ac
 
 ### Example of added annotations
 
+![image](https://github.com/user-attachments/assets/c30aab20-dbb8-48bf-ae06-62f2b2e00bf7)
+
+
 # License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
