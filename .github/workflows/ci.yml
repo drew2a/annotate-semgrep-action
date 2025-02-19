@@ -15,6 +15,7 @@ jobs:
       - name: Run Annotate Semgrep Action
         id: annotate
         uses: ./
+        fail_on: "ERROR,WARNING"
         with:
           json_path: "tests/test_result.json"
 
