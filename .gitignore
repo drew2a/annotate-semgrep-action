@@ -171,3 +171,5 @@ cython_debug/
 .pypirc
 .aider*
 .idea
+
+.DS_Store
