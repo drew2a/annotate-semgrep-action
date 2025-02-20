@@ -30,6 +30,6 @@ jobs:
 
       - name: Run Annotate Semgrep Action
         uses: ./
-        fail_on: "ERROR,WARNING"
         with:
           json_path: results.json
+          fail_on: "ERROR,WARNING"
