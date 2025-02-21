@@ -1,0 +1,31 @@
+name: Test Annotate Semgrep Action
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Annotate Semgrep Action with the output
+        id: annotate
+        uses: ./
+        with:
+          json_path: tests/test_result.json
+          output: generated_output.txt
+
+      - name: Compare generated output with expected
+        run: |
+          echo "${{ steps.annotate.outputs.annotations }}" > generated_output.txt
+          diff -u tests/expected_output.txt generated_output.txt
+
+      - name: Run Annotate Semgrep Action with annotations
+        id: annotate
+        uses: ./
+        with:
+          json_path: tests/test_result.json

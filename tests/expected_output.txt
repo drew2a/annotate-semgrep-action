@@ -1,0 +1,2 @@
+::warning file=parse_semgrep.py,line=1::Test annotation%0A%0AMetadata:%0A- Confidence: LOW%0A- Likelihood: LOW%0A- Impact: HIGH%0A- Source: https://semgrep.dev/r/python.lang.security.audit.formatted-sql-query.formatted-sql-query%0A%0AReferences:%0A- https://stackoverflow.com/questions/775296/mysql-parameterized-queries
+
