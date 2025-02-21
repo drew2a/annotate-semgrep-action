@@ -1,0 +1,20 @@
+name: Test Annotate Semgrep Action
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: python parse_semgrep.py tests/test_result.json > generated_output.txt
+      - run: diff -u tests/expected_output.txt generated_output.txt
+
+      - name: Run Annotate Semgrep Action with annotations
+        uses: ./
+        with:
+          json_path: tests/test_result.json
