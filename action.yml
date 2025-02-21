@@ -1,0 +1,21 @@
+name: "Annotate Semgrep"
+description: "GitHub Action for converting Semgrep JSON reports into PR annotations"
+author: "Andrei Andreev"
+branding:
+  icon: "check"
+  color: "blue"
+inputs:
+  json_path:
+    description: "Path to the JSON Semgrep report"
+    required: true
+    default: "results.json"
+  fail_on:
+    description: "Comma-separated list of severity levels that will fail the job (e.g., ERROR,WARNING)"
+    required: false
+    default: ""
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.json_path }}
+    - --fail-on=${{ inputs.fail_on }}
