@@ -9,6 +9,10 @@ inputs:
     description: "Path to the JSON Semgrep report"
     required: true
     default: "results.json"
+  output:
+    description: "Output file for annotations (use 'stdout' for standard output)"
+    required: false
+    default: "stdout"
   fail_on:
     description: "Comma-separated list of severity levels that will fail the job (e.g., ERROR,WARNING)"
     required: false
@@ -18,4 +22,5 @@ runs:
   image: "Dockerfile"
   args:
     - ${{ inputs.json_path }}
+    - ${{ inputs.output }}
     - --fail-on=${{ inputs.fail_on }}

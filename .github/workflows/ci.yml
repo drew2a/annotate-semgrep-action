@@ -16,8 +16,8 @@ jobs:
         id: annotate
         uses: ./
         with:
-          json_path: "tests/test_result.json"
-
+          json_path: tests/test_result.json
+          output: generated_output.txt
 
       - name: Compare generated output with expected
         run: |

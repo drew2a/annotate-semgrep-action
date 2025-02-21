@@ -1,10 +1,12 @@
 FROM python:3.9-slim
 
-RUN useradd --create-home appuser
+# Create a non-root user
+RUN adduser --disabled-password --gecos "" myuser
 
 WORKDIR /app
 COPY parse_semgrep.py /app/parse_semgrep.py
 
-USER appuser
+# Switch to non-root user
+USER myuser
 
 ENTRYPOINT ["python", "/app/parse_semgrep.py"]
