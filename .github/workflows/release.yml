@@ -1,0 +1,51 @@
+name: Release
+# Started by hand (Actions -> Release -> Run workflow) with the version to publish.
+# It tags the current main, creates the GitHub Release with generated notes and moves
+# the major tag (v1) that users of the action reference.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, e.g. 1.0.2'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Create the release and move the major tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::Releases are made from main, not from $GITHUB_REF"
+            exit 1
+          fi
+
+          version="${VERSION#v}"
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::'$VERSION' is not a version like 1.0.2"
+            exit 1
+          fi
+          tag="v$version"
+          major_tag="v${version%%.*}"
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$tag" > /dev/null; then
+            echo "::error::Tag $tag already exists"
+            exit 1
+          fi
+
+          gh release create "$tag" --target "$GITHUB_SHA" --title "$tag" --generate-notes
+
+          # Users reference the action as drew2a/annotate-semgrep-action@v1, so the major tag follows every release.
+          git tag --force "$major_tag" "$GITHUB_SHA"
+          git push --force origin "refs/tags/$major_tag"
